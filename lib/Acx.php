@@ -2,6 +2,8 @@
 
 namespace ACX;
 
+use GuzzleHttp\Psr7\Uri;
+
 class ACXAPIException extends \ErrorException {};
 
 class Acx
@@ -71,37 +73,31 @@ class Acx
         $response = $this->client->request($verb, $url);
         return json_decode($response->getBody(), true);
     }
-    // function QueryPublic($method, array $request = array())
-    // {
-        // // build the POST data string
-        // $postdata = http_build_query($request, '', '&');
 
-        // // // make request
-        // // curl_setopt($this->curl, CURLOPT_URL, );
-        // // curl_setopt($this->curl, CURLOPT_POSTFIELDS, $postdata);
-        // // curl_setopt($this->curl, CURLOPT_HTTPHEADER, array());
+    public function me()
+    {
+        $uri = new Uri($this->url . 'members/me.json');
+        $data = $this->createAuth($uri->getPath(), [], 'GET' );
+        $response = $this->client->request('GET', $uri->withQuery($data));
+        return json_decode($response->getBody(), true);
+    }
 
-        // $request = $this->client->request('GET', $this->url . '/v' . $this->version . '/' . $method);
+    private function createAuth($path, $apiParams, $verb)
+    {
+        if (empty($this->key) || empty($this->secret)) {
+            throw new ACXAPIException("API key and secrect can't be empty");
+        }
 
-        // if (){
-
-        // }
-
-        // $result = curl_exec($this->curl);
-        // if($result===false)
-            // throw new ACXAPIException('CURL error: ' . curl_error($this->curl));
-
-        // // decode results
-        // $result = json_decode($result, true);
-        // if(!is_array($result))
-            // throw new ACXAPIException('JSON decode error');
-
-        // return $result;
-    // }
-
-    // function __destruct()
-    // {
-        // curl_close($this->curl);
-    // }
-
+        static $i=0;
+        $mt = explode(' ', microtime());
+        $apiParams['tonce'] = $mt[1] . substr($mt[0], 2, 3);
+        $apiParams['tonce'] += $i++%900;
+        $apiParams['access_key'] = $this->key;
+        ksort($apiParams);
+        $query = http_build_query($apiParams, '', '&');
+        // Server received decoded value
+        $query = preg_replace('/%5B[0-9]*([a-z]+)?%5D/simU', '[\1]', $query);
+        $signature = hash_hmac('sha256', "{$verb}|{$path}|{$query}", $this->secret);
+        return $query .'&signature=' . $signature;
+    }
 }

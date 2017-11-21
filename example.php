@@ -55,8 +55,12 @@ $res = $acx->timestamp();
 
 ########### private methods ###########
 
+$key = ''; // set your api key here
+$secret = ''; // set your api key here
+
+$acx = new Acx($key, $secret);
+
+$res = $acx->me();
+//
 // get public kkk
 var_dump($res);
-
-
-
