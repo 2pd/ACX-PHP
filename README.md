@@ -17,3 +17,6 @@ $acx = new Acx();
 $res = $acx->ticker();
 ```
 see more in example.php
+
+## Licence
+MIT

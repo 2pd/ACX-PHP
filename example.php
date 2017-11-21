@@ -4,11 +4,7 @@ require_once 'vendor/autoload.php';
 
 use ACX\Acx;
 
-$key = '';
-$secret = '';
-$url = 'https://acx.io/api/v2/';
-
-$acx = new Acx($key, $secret, $url);
+$acx = new Acx();
 
 // get ticker with all pairs
 $res = $acx->ticker();
@@ -17,9 +13,7 @@ $res = $acx->ticker();
 $res = $acx->ticker('ethaud');
 
 // get public markets list
-$res = $acx->markets();
-
-// get public orderbook of btcaud
+$res = $acx->markets(); // get public orderbook of btcaud
 $res = $acx->orderbook('btcaud');
 
 // get public orderbook with limits
@@ -60,7 +54,34 @@ $secret = ''; // set your api key here
 
 $acx = new Acx($key, $secret);
 
+// get personal account info, including balance
 $res = $acx->me();
-//
-// get public kkk
+
+// get deposit history
+$res = $acx->deposits();
+
+// get deposit details with tx id
+// $res = $acx->deposit('6e290b0aa149ca2138122b2f3bf698678a45e9951af90e38329b5cdd61134a50');
+
+// get all orders
+$res = $acx->getorders('btcaud');
+
+// get all open orders
+$res = $acx->getorders('btcaud', ['state' => 'wait']);
+
+// get one order details
+// $res = $acx->getorder('111');
+
+// cancel all open orders
+$res = $acx->cancel('both');
+
+// cancel one specific order
+// $res = $acx->cancel('118698');
+
+$res = $acx->buy('btcaud',['amount' => 0.1, 'price' => 1000]);
+
+// sell multi orders
+$res = $acx->sell('btcaud', [['amount' => 0.1, 'price' => 1000], ['amount' => 0.1, 'price' => 2000]])
+
+// finally wish you be rich.
 var_dump($res);
