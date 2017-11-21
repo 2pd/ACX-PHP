@@ -4,17 +4,15 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Liang Shi",
-            "email": "Jeremy@pda.sh",
-            "url": ""
+            "name": "Liang Shi"
         }
     ],
     "require": {
-        "guzzlehttp/guzzle": "6.*",
+        "guzzlehttp/guzzle": "6.*"
     },
     "autoload": {
         "psr-4": {
-            "ACXAPI": "lib"
+            "ACX\\": "lib/"
         }
     }
 }
